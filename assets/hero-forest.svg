@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="560" viewBox="0 0 640 560" role="img" aria-labelledby="title">
+<title id="title">Cozy house in a peaceful green landscape</title>
+<defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#ecf0e4"/><stop offset="1" stop-color="#d6e2ce"/></linearGradient><linearGradient id="front" x2="1" y2="1"><stop stop-color="#fff9e9"/><stop offset="1" stop-color="#e9d6b4"/></linearGradient><filter id="shadow" x="-30%" y="-30%" width="170%" height="170%"><feGaussianBlur stdDeviation="13"/></filter></defs>
+<path d="M91 68C146 18 249 19 306 52c81 48 120-2 205 17 82 18 113 102 91 185-12 48 13 83-15 143-28 61-98 99-181 96-134-4-194 50-289-18C32 414 13 329 32 242 44 185 50 116 91 68Z" fill="url(#sky)"/>
+<circle cx="464" cy="156" r="67" fill="#f8deb0"/><circle cx="464" cy="156" r="89" fill="#f9e9c6" opacity=".4"/>
+<path d="M70 334c87-99 143-56 224-17 69 34 137-92 227-55 41 18 71 49 93 85v84H58Z" fill="#b7cba9"/>
+<path d="M60 372c115-56 150-12 240-22 113-12 166-77 285-4l17 90H46Z" fill="#98b490"/>
+<ellipse cx="326" cy="471" rx="228" ry="37" fill="#4c7059" opacity=".12" filter="url(#shadow)"/>
+<path d="M45 440c94-39 147-39 228-17 90 25 188 6 329-23v89c-204 63-360 43-557 9Z" fill="#6e9873"/>
+<path d="M47 484c103-42 197-10 284-9 121 3 218-17 274-27v61H50Z" fill="#537f60"/>
+<!-- distant trees -->
+<g fill="#698f6a"><path d="M91 346l20-63 20 63Z"/><path d="M96 329l15-66 15 66Z"/><path d="M535 333l18-58 18 58Z"/><path d="M543 315l10-55 10 55Z"/><path d="M573 355l19-72 19 72Z"/></g>
+<!-- home roof and house -->
+<path d="M215 289 341 188l129 101-14 19-115-88-111 87Z" fill="#7a7563"/><path d="M228 287 341 203l115 84v150H228Z" fill="url(#front)"/><path d="M215 289 341 188l129 101-14 19-115-88-111 87Z" fill="#997d66"/><path d="M223 290 341 199l118 91-15 9-103-79-102 79Z" fill="#705e51"/>
+<path d="M228 295h228v143H228Z" fill="url(#front)"/>
+<path d="M229 413c58 5 105 8 226-3v28H229Z" fill="#dcc29d"/>
+<!-- chimney -->
+<path d="M395 207v-48h35v74Z" fill="#d5ad8e"/><path d="M389 156h45v10h-45Z" fill="#8e7963"/>
+<!-- door -->
+<path d="M322 350q0-18 19-18t19 18v88h-38Z" fill="#58715c"/><path d="M328 355q0-12 13-12t13 12v83h-26Z" fill="#708972"/><circle cx="350" cy="395" r="3" fill="#f6d494"/>
+<!-- windows -->
+<g><rect x="254" y="323" width="49" height="56" rx="6" fill="#a78265"/><rect x="259" y="328" width="39" height="46" rx="3" fill="#d4e8d9"/><path d="M278 329v44m-19-22h39" stroke="#a78265" stroke-width="5"/><rect x="378" y="323" width="49" height="56" rx="6" fill="#a78265"/><rect x="383" y="328" width="39" height="46" rx="3" fill="#d4e8d9"/><path d="M403 329v44m-20-22h39" stroke="#a78265" stroke-width="5"/></g>
+<!-- path -->
+<path d="M331 438h21c20 24 26 36 43 55-33 1-64 0-95-4 11-17 23-38 31-51Z" fill="#e6d6b4"/>
+<!-- left tall tree -->
+<path d="M144 393V281" stroke="#7f6951" stroke-width="18" stroke-linecap="round"/><g fill="#6d946f"><circle cx="106" cy="286" r="36"/><circle cx="151" cy="244" r="47"/><circle cx="191" cy="286" r="36"/><circle cx="150" cy="305" r="40"/></g><g fill="#86a784"><circle cx="128" cy="256" r="30"/><circle cx="168" cy="260" r="32"/></g>
+<!-- right tall tree -->
+<path d="M512 406V268" stroke="#846d54" stroke-width="18" stroke-linecap="round"/><g fill="#527b5d"><circle cx="475" cy="290" r="39"/><circle cx="507" cy="252" r="48"/><circle cx="552" cy="287" r="39"/><circle cx="519" cy="314" r="42"/></g><g fill="#759975"><circle cx="488" cy="265" r="32"/><circle cx="529" cy="274" r="30"/></g>
+<!-- fall bushes -->
+<g><ellipse cx="215" cy="423" rx="40" ry="25" fill="#8fa877"/><ellipse cx="193" cy="415" rx="22" ry="24" fill="#adab77"/><ellipse cx="469" cy="427" rx="49" ry="25" fill="#809b6a"/><ellipse cx="443" cy="416" rx="30" ry="24" fill="#c0ad7b"/></g>
+<!-- flowers -->
+<g fill="#e6c798"><circle cx="109" cy="449" r="4"/><circle cx="125" cy="440" r="3"/><circle cx="520" cy="446" r="4"/><circle cx="539" cy="434" r="3"/><circle cx="562" cy="459" r="3"/></g><g fill="#eae8d5"><circle cx="92" cy="462" r="4"/><circle cx="280" cy="468" r="3"/><circle cx="488" cy="466" r="4"/></g>
+</svg>

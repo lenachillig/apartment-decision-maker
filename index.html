@@ -3,15 +3,58 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#174D45">
   <title>Apartment Decision Maker</title>
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
 </head>
 <body>
-  <main class="welcome">
-    <h1>Apartment Decision Maker</h1>
-    <p>Find the apartment or shared flat that fits your needs.</p>
-    <p class="note">Our decision support system is coming soon.</p>
-  </main>
+  <!-- The home page has a top navigation and no sidebar. -->
+  <div id="home" class="home-page">
+    <header class="topbar">
+      <a class="brand" href="#home"><span class="brand-symbol">⌂</span> Apartment<span class="brand-accent">Wise</span></a>
+      <nav aria-label="Main navigation">
+        <a href="#home">Home</a>
+        <a href="#decision">Decision Maker</a>
+        <a href="#apartments">All Apartments</a>
+        <a href="#tips">Good to Know</a>
+      </nav>
+    </header>
+    <main class="home-main">
+      <div class="hero-label">APARTMENT DECISION SUPPORT</div>
+      <h1>Find the place<br><em>that fits you.</em></h1>
+      <p>A smarter way to explore your options and make a confident housing decision.</p>
+      <div class="hero-actions">
+        <a href="#decision" class="btn btn-primary">Start deciding <span aria-hidden="true">→</span></a>
+        <a href="#apartments" class="btn btn-outline">Explore apartments</a>
+      </div>
+      <div class="hero-graphic" aria-hidden="true"><div class="graphic-circle"><span>⌂</span></div><div class="graphic-tag">YOUR HOME. YOUR CHOICE.</div></div>
+    </main>
+    <footer class="home-footer">A student project · Apartment Decision Maker</footer>
+  </div>
+
+  <!-- All subpages share the left sidebar. -->
+  <div id="workspace" class="workspace" hidden>
+    <aside class="sidebar" aria-label="Workspace navigation">
+      <a class="sidebar-brand" href="#home"><span class="brand-symbol">⌂</span><span>Apartment<span class="brand-accent">Wise</span></span></a>
+      <div class="sidebar-label">WORKSPACE</div>
+      <nav class="side-nav">
+        <a href="#decision" data-page="decision"><span aria-hidden="true">◈</span> Decision Maker</a>
+        <a href="#apartments" data-page="apartments"><span aria-hidden="true">▦</span> All Apartments</a>
+        <a href="#favorites" data-page="favorites"><span aria-hidden="true">♡</span> Favorites</a>
+        <a href="#tips" data-page="tips"><span aria-hidden="true">✦</span> Good to Know</a>
+      </nav>
+      <div class="sidebar-bottom"><a href="#home">← Back to Home</a></div>
+    </aside>
+    <main class="workspace-main" id="workspace-main" tabindex="-1">
+      <div class="workspace-top"><span>APARTMENT DECISION MAKER</span><span class="prototype-label">DESIGN PROTOTYPE</span></div>
+      <div class="workspace-content">
+        <span class="section-eyebrow" id="page-eyebrow">YOUR WORKSPACE</span>
+        <h1 id="page-title">Decision Maker</h1>
+        <p id="page-description" class="page-description">This section is being designed.</p>
+        <div class="empty-state"><div class="empty-icon" id="page-icon" aria-hidden="true">◈</div><h2>Coming soon</h2><p>Content and functionality will be added in a later project phase.</p></div>
+      </div>
+    </main>
+  </div>
 </body>
 </html>
