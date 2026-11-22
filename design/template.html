@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Template · ApartmentWise</title>
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../components.css">
+  <style>
+    /* Template-only layout. Nothing in this block is used by the app. */
+    .tpl { width: min(1100px, 100% - 32px); margin: 0 auto; padding: 48px 0 96px; }
+    .tpl-header { padding-bottom: 28px; border-bottom: 1px solid var(--line); }
+    .tpl-header h1 { font-size: clamp(32px, 4.5vw, 48px); letter-spacing: -1.5px; margin: 12px 0 10px; }
+    .tpl-header p { max-width: 720px; color: var(--muted); line-height: 1.65; margin: 0; }
+    .tpl-toc { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 20px; font-size: 14px; font-weight: 700; }
+    .tpl-toc a { color: var(--teal); }
+    .tpl-section { padding-top: 56px; }
+    .tpl-section > h2 { font-size: 28px; letter-spacing: -.8px; margin: 8px 0 6px; }
+    .tpl-section > p { color: var(--muted); max-width: 720px; line-height: 1.6; margin: 0 0 22px; }
+    .tpl-block { margin-top: 28px; }
+    .tpl-tag { display: inline-block; margin-bottom: 10px; padding: 3px 8px; border-radius: 6px; background: #E3E9E1; color: var(--muted); font: 700 11px/1.4 Consolas, 'Courier New', monospace; }
+    .tpl-note { margin: 10px 0 0; font-size: 13px; color: var(--muted); line-height: 1.55; }
+    .tpl-swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+    .tpl-swatch { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: white; font-size: 12px; }
+    .tpl-swatch div { height: 48px; }
+    .tpl-swatch p { margin: 0; padding: 8px 10px; line-height: 1.4; }
+    .tpl-swatch code { color: var(--muted); }
+    .tpl-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .tpl-summary { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-bottom: 18px; font-size: 13px; color: var(--muted); }
+    .tpl-summary b { color: var(--evergreen); }
+  </style>
+</head>
+<body>
+<div class="tpl">
+
+  <header class="tpl-header">
+    <span class="section-eyebrow">DESIGN TEMPLATE · NOT LINKED FROM THE APP</span>
+    <h1>Decision workflow components</h1>
+    <p>Building blocks for the three steps of the Decision Maker: apartments, preferences and results. Rules, field names and states follow <code>docs/data-model.md</code>. All values are placeholder data. The scores in step 3 are calculated with test profile A, but they only illustrate the layout and are not reference results.</p>
+    <nav class="tpl-toc" aria-label="Template sections">
+      <a href="#foundations">0 Foundations</a>
+      <a href="#navigation">1 Step navigation</a>
+      <a href="#apartments">2 Apartments</a>
+      <a href="#preferences">3 Preferences</a>
+      <a href="#results">4 Results</a>
+    </nav>
+  </header>
+
+  <!-- 0 FOUNDATIONS -->
+  <section class="tpl-section" id="foundations">
+    <span class="section-eyebrow">0 · FOUNDATIONS</span>
+    <h2>Colours, states and buttons</h2>
+    <p>The brand palette comes from <code>style.css</code>. <code>components.css</code> adds four status colours, one per result state. Every state also has its own symbol and label, so it can be told apart without colour.</p>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">:root tokens</span>
+      <div class="tpl-swatches">
+        <div class="tpl-swatch"><div style="background:var(--evergreen)"></div><p><b>Evergreen</b><br><code>--evergreen</code></p></div>
+        <div class="tpl-swatch"><div style="background:var(--teal)"></div><p><b>Teal</b><br><code>--teal</code></p></div>
+        <div class="tpl-swatch"><div style="background:var(--sage)"></div><p><b>Sage</b><br><code>--sage</code></p></div>
+        <div class="tpl-swatch"><div style="background:var(--clay)"></div><p><b>Clay · focus</b><br><code>--clay</code></p></div>
+        <div class="tpl-swatch"><div style="background:var(--ok-bg)"></div><p><b>Ranked</b><br><code>--ok-*</code></p></div>
+        <div class="tpl-swatch"><div style="background:var(--danger-bg)"></div><p><b>Excluded</b><br><code>--danger*</code></p></div>
+        <div class="tpl-swatch"><div style="background:var(--warn-bg)"></div><p><b>Insufficient data</b><br><code>--warn-*</code></p></div>
+        <div class="tpl-swatch"><div style="background:var(--neutral-bg)"></div><p><b>Incomplete soft data</b><br><code>--neutral*</code></p></div>
+      </div>
+    </div>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.badge</span>
+      <div class="tpl-row">
+        <span class="badge badge-ranked">Ranked</span>
+        <span class="badge badge-excluded">Excluded</span>
+        <span class="badge badge-insufficient">Insufficient data</span>
+        <span class="badge badge-incomplete">Incomplete soft data</span>
+      </div>
+      <p class="tpl-note">Stage 1 puts every apartment into exactly one of the first three states. "Incomplete soft data" is a passed apartment that is missing a value for an active soft criterion. It is listed separately and not scored in the main ranking.</p>
+    </div>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.btn · .btn-small · .btn-text</span>
+      <div class="btn-row">
+        <button class="btn btn-primary" type="button">Primary action <span aria-hidden="true">→</span></button>
+        <button class="btn btn-outline" type="button">Secondary action</button>
+        <button class="btn btn-primary" type="button" disabled>Disabled</button>
+        <button class="btn btn-outline btn-small" type="button">Small</button>
+        <button class="btn-text" type="button">Text action</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1 NAVIGATION -->
+  <section class="tpl-section" id="navigation">
+    <span class="section-eyebrow">1 · STEP NAVIGATION</span>
+    <h2>Stepper</h2>
+    <p>Sits at the top of the Decision Maker page. A step counts as done when its input is complete. Users can go back to earlier steps at any time.</p>
+    <span class="tpl-tag">.stepper · .step.is-done · .step.is-current</span>
+    <ol class="stepper" aria-label="Decision steps">
+      <li class="step is-done"><span>Apartments<small>6 added</small></span></li>
+      <li class="step is-current" aria-current="step"><span>Preferences<small>3 inputs missing</small></span></li>
+      <li class="step"><span>Results<small>Available when the profile is complete</small></span></li>
+    </ol>
+  </section>
+
+  <!-- 2 APARTMENTS -->
+  <section class="tpl-section" id="apartments">
+    <span class="section-eyebrow">2 · STEP: APARTMENTS</span>
+    <h2>Enter apartment alternatives</h2>
+    <p>Two ways in: load the test dataset or add apartments one by one. Empty fields are stored as unknown (<code>null</code>) and are never guessed. The "All Apartments" page reuses the same table in read-only form.</p>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.btn-row · .table-wrap · .data-table</span>
+      <div class="btn-row" style="margin-bottom:14px">
+        <button class="btn btn-outline btn-small" type="button">Load test dataset (50 listings)</button>
+        <button class="btn btn-primary btn-small" type="button">+ Add apartment</button>
+      </div>
+      <div class="table-wrap">
+        <table class="data-table">
+          <caption class="visually-hidden">Apartments added to this comparison</caption>
+          <thead>
+            <tr><th scope="col">ID</th><th scope="col">Listing</th><th scope="col" class="num">Rent</th><th scope="col" class="num">Deposit</th><th scope="col">Available</th><th scope="col">Rental period</th><th scope="col" class="num">Commute</th><th scope="col" class="num">Room</th><th scope="col">Missing</th><th scope="col"><span class="visually-hidden">Actions</span></th></tr>
+          </thead>
+          <tbody>
+            <tr><td>DEMO-01</td><td>Bright room near campus</td><td class="num">520 €</td><td class="num">1,040 €</td><td>1 Feb 2027</td><td>unlimited</td><td class="num">22 min</td><td class="num">18.0 m²</td><td>–</td><td><button class="btn-text" type="button">Edit</button></td></tr>
+            <tr><td>DEMO-02</td><td>Shared flat with garden</td><td class="num">480 €</td><td class="num">1,440 €</td><td>15 Mar 2027</td><td>24 months</td><td class="num">35 min</td><td class="num">24.5 m²</td><td>–</td><td><button class="btn-text" type="button">Edit</button></td></tr>
+            <tr><td>APT-003</td><td>Room in a 5-person flat</td><td class="num">650 €</td><td class="num">910 €</td><td>1 Mar 2027</td><td>18 months</td><td class="num">6 min</td><td class="num">12.0 m²</td><td>–</td><td><button class="btn-text" type="button">Edit</button></td></tr>
+            <tr><td>DEMO-04</td><td>Attic room, quiet street</td><td class="num">590 €</td><td class="num">1,180 €</td><td>1 Jan 2027</td><td>unlimited</td><td class="num">18 min</td><td class="num">16.0 m²</td><td><span class="missing">written_contract</span></td><td><button class="btn-text" type="button">Edit</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="tpl-note">The "Missing" column only lists fields that a criterion needs. Display-only fields such as district or floor are never flagged.</p>
+    </div>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.card · fieldset.form-group · .field · .input-unit · .choice-group</span>
+      <form class="card" onsubmit="return false" novalidate>
+        <h3 class="card-title">Add apartment</h3>
+        <p class="card-intro">Leave a field empty if you don't know the value. Unknown values are shown in the results, never guessed.</p>
+
+        <fieldset class="form-group">
+          <legend>Listing</legend>
+          <div class="form-grid">
+            <div class="field"><label for="f-title">Listing title</label><input class="input" id="f-title" value="Bright room near campus"></div>
+            <div class="field"><label for="f-district">District <span class="field-code">display only</span></label><input class="input" id="f-district" placeholder="e.g. Neustadt"></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-group">
+          <legend>Costs</legend>
+          <div class="form-grid">
+            <div class="field"><label for="f-rent">Monthly cost <span class="field-code">K01 · E01</span></label><div class="input-unit"><input class="input" id="f-rent" inputmode="decimal" value="520"><span>€</span></div><span class="field-hint">Total rent incl. utilities</span></div>
+            <div class="field"><label for="f-deposit">Deposit <span class="field-code">E02</span></label><div class="input-unit"><input class="input" id="f-deposit" inputmode="decimal" value="1040"><span>€</span></div></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-group">
+          <legend>Availability and contract</legend>
+          <div class="form-grid">
+            <div class="field"><label for="f-from">Available from <span class="field-code">K03</span></label><input class="input" id="f-from" type="date" value="2027-02-01"></div>
+            <div class="field"><label for="f-type">Rental type <span class="field-code">K04</span></label><select class="select" id="f-type"><option value="">Unknown</option><option selected>Unlimited</option><option>Limited</option></select></div>
+            <div class="field"><label for="f-max">Max. rental period <span class="field-code">K04</span></label><div class="input-unit"><input class="input" id="f-max" inputmode="numeric" disabled placeholder="Only if limited"><span>months</span></div></div>
+            <div class="field"><label for="f-min">Min. commitment <span class="field-code">note only</span></label><div class="input-unit"><input class="input" id="f-min" inputmode="numeric" placeholder="optional"><span>months</span></div></div>
+          </div>
+          <div class="form-grid is-wide" style="margin-top:18px">
+            <div class="field" role="radiogroup" aria-labelledby="l-contract">
+              <span class="field-label" id="l-contract">Written contract <span class="field-code">K09</span></span>
+              <div class="choice-group">
+                <label class="choice"><input type="radio" name="contract" checked><span>Yes</span></label>
+                <label class="choice"><input type="radio" name="contract"><span>No</span></label>
+                <label class="choice"><input type="radio" name="contract"><span>Unknown</span></label>
+              </div>
+            </div>
+            <div class="field" role="radiogroup" aria-labelledby="l-stepfree">
+              <span class="field-label" id="l-stepfree">Step-free access <span class="field-code">K14</span></span>
+              <div class="choice-group">
+                <label class="choice"><input type="radio" name="stepfree"><span>Yes</span></label>
+                <label class="choice"><input type="radio" name="stepfree" checked><span>No</span></label>
+                <label class="choice"><input type="radio" name="stepfree"><span>Unknown</span></label>
+              </div>
+              <span class="field-hint">Covers entrance, floor and elevator together.</span>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-group">
+          <legend>Location</legend>
+          <div class="form-grid">
+            <div class="field"><label for="f-commute">Commute <span class="field-code">E05</span></label><div class="input-unit"><input class="input" id="f-commute" inputmode="numeric" value="22"><span>min</span></div></div>
+            <div class="field"><label for="f-super">Nearest supermarket <span class="field-code">E09</span></label><div class="input-unit"><input class="input" id="f-super" inputmode="numeric" value="300"><span>m</span></div></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="form-group">
+          <legend>Room</legend>
+          <div class="form-grid">
+            <div class="field is-invalid"><label for="f-room">Room size <span class="field-code">E12</span></label><div class="input-unit"><input class="input" id="f-room" inputmode="decimal" value="-18" aria-invalid="true" aria-describedby="e-room"><span>m²</span></div><span class="field-error" id="e-room">Enter a size greater than 0.</span></div>
+            <div class="field"><label for="f-flatmates">Flatmates</label><input class="input" id="f-flatmates" inputmode="numeric" value="1"></div>
+            <div class="field"><label for="f-bath">Private bathroom</label><select class="select" id="f-bath"><option value="">Unknown</option><option selected>Yes</option><option>No</option></select></div>
+            <div class="field"><label for="f-furn">Furnishing <span class="field-code">E15</span></label><select class="select" id="f-furn"><option value="">Unknown</option><option selected>Furnished</option><option>Partly furnished</option><option>Unfurnished</option></select></div>
+          </div>
+          <p class="tpl-note" style="margin-top:14px"><b>Privacy score (E14): 4 of 5</b> · derived from 1 flatmate plus a private bathroom. Not entered by hand.</p>
+        </fieldset>
+
+        <div class="btn-row" style="margin-top:24px">
+          <button class="btn btn-primary" type="submit">Save apartment</button>
+          <button class="btn btn-outline" type="button">Cancel</button>
+        </div>
+      </form>
+      <p class="tpl-note">Field codes (K01, E05 …) link each input to its criterion. They help during development and can be hidden later. The room size field shows the error state.</p>
+    </div>
+  </section>
+
+  <!-- 3 PREFERENCES -->
+  <section class="tpl-section" id="preferences">
+    <span class="section-eyebrow">3 · STEP: PREFERENCES</span>
+    <h2>Set the preference profile</h2>
+    <p>Order: hard limits, then furnishing, then reference values, then pairwise comparisons. Furnishing comes before the comparisons because "neutral" switches E15 off and reduces 21 questions to 15. There are no default values anywhere.</p>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.card · .form-grid · .choice-group</span>
+      <form class="card" onsubmit="return false" novalidate>
+        <h3 class="card-title">Hard limits</h3>
+        <p class="card-intro">Apartments that fail any of these are excluded, however well they score elsewhere.</p>
+        <div class="form-grid">
+          <div class="field"><label for="p-budget">Maximum monthly cost <span class="field-code">K01</span></label><div class="input-unit"><input class="input" id="p-budget" inputmode="decimal" value="650"><span>€</span></div><span class="field-hint">An apartment at exactly this price still passes.</span></div>
+          <div class="field"><label for="p-movein">Latest move-in date <span class="field-code">K03</span></label><input class="input" id="p-movein" type="date" value="2027-04-01"></div>
+          <div class="field"><label for="p-period">Minimum rental period <span class="field-code">K04</span></label><div class="input-unit"><input class="input" id="p-period" inputmode="numeric" value="12"><span>months</span></div></div>
+        </div>
+        <div class="field" role="radiogroup" aria-labelledby="l-need-stepfree" style="margin-top:18px;max-width:420px">
+          <span class="field-label" id="l-need-stepfree">Do you need step-free access? <span class="field-code">K14</span></span>
+          <div class="choice-group">
+            <label class="choice"><input type="radio" name="need-stepfree"><span>Yes</span></label>
+            <label class="choice"><input type="radio" name="need-stepfree"><span>No</span></label>
+          </div>
+          <span class="field-hint">Required. Nothing is preselected.</span>
+        </div>
+      </form>
+    </div>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.choice-group.is-cards</span>
+      <div class="card" role="radiogroup" aria-labelledby="l-furnish">
+        <h3 class="card-title" id="l-furnish">Furnishing preference</h3>
+        <p class="card-intro">Asked before the comparisons. If you are neutral, furnishing is not scored and you answer 15 instead of 21 questions.</p>
+        <div class="choice-group is-cards">
+          <label class="choice"><input type="radio" name="furnish" checked><span>Prefer furnished<small>Furnished 100 %, partly 50 %, unfurnished 0 %</small></span></label>
+          <label class="choice"><input type="radio" name="furnish"><span>Prefer unfurnished<small>Unfurnished 100 %, partly 50 %, furnished 0 %</small></span></label>
+          <label class="choice"><input type="radio" name="furnish"><span>Neutral<small>Furnishing is not scored</small></span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.ref-table</span>
+      <div class="card">
+        <h3 class="card-title">Reference values</h3>
+        <p class="card-intro">For each criterion: the value that earns full points and the worst value you would still accept (zero points). Values in between get points proportionally. These stay fixed while you compare, so adding an apartment never changes another apartment's score.</p>
+        <div class="table-wrap" style="border:0">
+          <table class="ref-table">
+            <thead><tr><th scope="col">Criterion</th><th scope="col">Ideal (full points)</th><th scope="col">Worst acceptable (0 points)</th></tr></thead>
+            <tbody>
+              <tr><td>Monthly cost <span class="field-code">E01</span></td><td><div class="input-unit"><input class="input" aria-label="Monthly cost ideal" value="400"><span>€</span></div></td><td><div class="input-unit"><input class="input" aria-label="Monthly cost worst" value="650"><span>€</span></div></td></tr>
+              <tr><td>Deposit <span class="field-code">E02</span></td><td><div class="input-unit"><input class="input" aria-label="Deposit ideal" value="600"><span>€</span></div></td><td><div class="input-unit"><input class="input" aria-label="Deposit worst" value="1950"><span>€</span></div></td></tr>
+              <tr><td>Commute <span class="field-code">E05</span></td><td><div class="input-unit"><input class="input" aria-label="Commute ideal" value="15"><span>min</span></div></td><td><div class="input-unit"><input class="input" aria-label="Commute worst" value="60"><span>min</span></div></td></tr>
+              <tr><td>Supermarket <span class="field-code">E09</span></td><td><div class="input-unit"><input class="input" aria-label="Supermarket ideal" value="200"><span>m</span></div></td><td><div class="input-unit"><input class="input" aria-label="Supermarket worst" value="1500"><span>m</span></div></td></tr>
+              <tr><td>Room size <span class="field-code">E12</span></td>
+                <td><div class="field is-invalid"><div class="input-unit"><input class="input" aria-label="Room size ideal" value="10" aria-invalid="true" aria-describedby="e-ref-room"><span>m²</span></div><span class="field-error" id="e-ref-room">Larger is better here: the ideal must be above the worst value.</span></div></td>
+                <td><div class="input-unit"><input class="input" aria-label="Room size worst" value="12"><span>m²</span></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="tpl-note">Privacy (E14) uses a fixed 1–5 scale and needs no input. Furnishing (E15) is set by the preference above.</p>
+      </div>
+    </div>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.progress · .pairwise</span>
+      <form class="card" onsubmit="return false">
+        <div class="progress"><span>Question 7 of 21</span><div class="progress-track" role="progressbar" aria-label="Pairwise comparisons answered" aria-valuemin="0" aria-valuemax="21" aria-valuenow="6"><div class="progress-fill" style="width:28.6%"></div></div></div>
+        <fieldset class="pairwise" style="border:0;padding:0;margin-top:18px">
+          <legend class="pairwise-question">Which is more important to you: <b>monthly cost</b> or <b>commute time</b>?</legend>
+          <div class="pairwise-pair" aria-hidden="true"><span>← Monthly cost</span><span>Commute time →</span></div>
+          <div class="choice-group">
+            <label class="choice"><input type="radio" name="pw"><span>Cost: much more</span></label>
+            <label class="choice"><input type="radio" name="pw" checked><span>Cost: more</span></label>
+            <label class="choice"><input type="radio" name="pw"><span>Equal</span></label>
+            <label class="choice"><input type="radio" name="pw"><span>Commute: more</span></label>
+            <label class="choice"><input type="radio" name="pw"><span>Commute: much more</span></label>
+          </div>
+        </fieldset>
+        <div class="pairwise-nav">
+          <button class="btn btn-outline btn-small" type="button">← Previous</button>
+          <button class="btn-text" type="button">Advanced: use the 1–9 scale</button>
+          <button class="btn btn-primary btn-small" type="submit">Next →</button>
+        </div>
+      </form>
+      <p class="tpl-note">The five options map to the AHP scale. Weights are calculated from the answers and are never typed in.</p>
+    </div>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.alert.alert-warning</span>
+      <div class="alert alert-warning" role="alert">
+        <span class="alert-icon" aria-hidden="true">!</span>
+        <div>
+          <strong>Your answers contradict each other too much (CR 0.14, limit 0.10).</strong>
+          <p>No ranking is shown until you review your answers. The comparison that deviates most is <b>deposit vs. supermarket distance</b>. Your answers are never changed automatically.</p>
+          <div class="btn-row"><button class="btn btn-primary btn-small" type="button">Review this comparison</button></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.checklist · .btn[aria-disabled]</span>
+      <div class="card">
+        <h3 class="card-title">Ready to evaluate?</h3>
+        <p class="card-intro">The evaluation starts once every input is complete.</p>
+        <ul class="checklist" id="missing-inputs">
+          <li class="is-done">Budget, move-in date and minimum rental period</li>
+          <li class="is-missing">Step-free access <span>· answer yes or no</span></li>
+          <li class="is-done">Furnishing preference</li>
+          <li class="is-missing">Reference values <span>· room size: ideal must be above worst</span></li>
+          <li class="is-missing">Pairwise comparisons <span>· 6 of 21 answered</span></li>
+        </ul>
+        <button class="btn btn-primary" type="button" aria-disabled="true" aria-describedby="missing-inputs">Show results</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 RESULTS -->
+  <section class="tpl-section" id="results">
+    <span class="section-eyebrow">4 · STEP: RESULTS</span>
+    <h2>Ranking and explanations</h2>
+    <p>One tab per state. The ranking tab opens first. Each tab shows the number of apartments in it, so nothing gets lost. Scores are shown with two decimals. Apartments with equal scores share a rank.</p>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">profile summary · .tabs</span>
+      <div class="tpl-summary" aria-label="Profile used">
+        <span>Budget <b>650 €</b></span><span>Move-in by <b>1 Apr 2027</b></span><span>Min. <b>12 months</b></span><span>Step-free <b>not required</b></span><span>Consistency <b>CR 0.0097 ✓</b></span>
+      </div>
+      <div class="tabs" role="tablist" aria-label="Result groups">
+        <button class="tab" role="tab" aria-selected="true">Ranking <span class="tab-count">3</span></button>
+        <button class="tab" role="tab" aria-selected="false">Excluded <span class="tab-count">1</span></button>
+        <button class="tab" role="tab" aria-selected="false">Insufficient data <span class="tab-count">1</span></button>
+        <button class="tab" role="tab" aria-selected="false">Incomplete soft data <span class="tab-count">1</span></button>
+      </div>
+    </div>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.result-card · .contrib · .explain (ranked, expanded)</span>
+      <article class="result-card">
+        <div class="result-head">
+          <div class="result-rank" aria-label="Rank 1">1</div>
+          <div class="result-title"><h3>Bright room near campus</h3><div class="result-meta">DEMO-01 · 520 € · 18.0 m² · 22 min commute</div></div>
+          <div class="result-score"><strong>62.62</strong><span>of 100 points</span></div>
+        </div>
+        <div class="result-body">
+          <div>
+            <h4>Points per criterion</h4>
+            <ul class="contrib">
+              <li><span>Commute</span><span class="contrib-bar"><span class="contrib-track" style="width:100%"></span><span class="contrib-fill" style="width:84.45%"></span></span><span class="contrib-value"><b>22.92</b> / 27.14</span></li>
+              <li><span>Monthly cost</span><span class="contrib-bar"><span class="contrib-track" style="width:100%"></span><span class="contrib-fill" style="width:51.99%"></span></span><span class="contrib-value"><b>14.11</b> / 27.14</span></li>
+              <li><span>Deposit</span><span class="contrib-bar"><span class="contrib-track" style="width:34.78%"></span><span class="contrib-fill" style="width:23.43%"></span></span><span class="contrib-value"><b>6.36</b> / 9.44</span></li>
+              <li><span>Supermarket</span><span class="contrib-bar"><span class="contrib-track" style="width:22.48%"></span><span class="contrib-fill" style="width:20.74%"></span></span><span class="contrib-value"><b>5.63</b> / 6.10</span></li>
+              <li><span>Privacy</span><span class="contrib-bar"><span class="contrib-track" style="width:34.78%"></span><span class="contrib-fill" style="width:17.39%"></span></span><span class="contrib-value"><b>4.72</b> / 9.44</span></li>
+              <li><span>Furnishing</span><span class="contrib-bar"><span class="contrib-track" style="width:17.28%"></span><span class="contrib-fill" style="width:17.28%"></span></span><span class="contrib-value"><b>4.69</b> / 4.69</span></li>
+              <li><span>Room size</span><span class="contrib-bar"><span class="contrib-track" style="width:59.06%"></span><span class="contrib-fill" style="width:15.40%"></span></span><span class="contrib-value"><b>4.18</b> / 16.03</span></li>
+            </ul>
+            <p class="tpl-note">Grey track = the most points a criterion can give (its weight). Green = points this apartment earned (weight × utility × 100).</p>
+          </div>
+          <div>
+            <h4>Why this rank</h4>
+            <ul class="explain is-strengths">
+              <li>Commute and monthly cost bring the most points (37.03 of 62.62).</li>
+              <li>Fully furnished, as you prefer.</li>
+            </ul>
+            <ul class="explain is-weaknesses">
+              <li>Room size earns only 4.18 of 16.03 possible points.</li>
+              <li>Privacy is medium (score 3 of 5).</li>
+            </ul>
+            <p class="result-note">All hard criteria passed.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.result-card (ranked, collapsed)</span>
+      <article class="result-card">
+        <div class="result-head">
+          <div class="result-rank" aria-label="Rank 2">2</div>
+          <div class="result-title"><h3>Shared flat with garden</h3><div class="result-meta">DEMO-02 · 480 € · 24.5 m² · 35 min commute</div></div>
+          <div class="result-score"><strong>60.18</strong><span>of 100 points</span></div>
+          <button class="btn-text" type="button" aria-expanded="false">Details</button>
+        </div>
+      </article>
+      <article class="result-card">
+        <div class="result-head">
+          <div class="result-rank" aria-label="Rank 3">3</div>
+          <div class="result-title"><h3>Room in a 5-person flat</h3><div class="result-meta">APT-003 · 650 € · 12.0 m² · 6 min commute</div></div>
+          <div class="result-score"><strong>40.14</strong><span>of 100 points</span></div>
+          <button class="btn-text" type="button" aria-expanded="false">Details</button>
+        </div>
+      </article>
+    </div>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.result-card · .badge-excluded</span>
+      <article class="result-card">
+        <div class="result-head">
+          <div class="result-title"><h3>Studio in the old town</h3><div class="result-meta">DEMO-03 · 720 € · 21.0 m²</div></div>
+          <span class="badge badge-excluded">Excluded</span>
+        </div>
+        <div class="result-body" style="grid-template-columns:1fr">
+          <div>
+            <h4>Failed hard criteria</h4>
+            <ul class="result-reasons"><li><b>K01 Monthly cost:</b> 720 € is above your budget of 650 €.</li></ul>
+            <p class="result-note">Not provided: available_from. This would not change the result.</p>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.result-card · .badge-insufficient</span>
+      <article class="result-card">
+        <div class="result-head">
+          <div class="result-title"><h3>Attic room, quiet street</h3><div class="result-meta">DEMO-04 · 590 € · 16.0 m²</div></div>
+          <span class="badge badge-insufficient">Insufficient data</span>
+        </div>
+        <div class="result-body" style="grid-template-columns:1fr">
+          <div>
+            <h4>Cannot be checked yet</h4>
+            <ul class="result-reasons"><li><b>K09 Written contract:</b> unknown.</li></ul>
+            <p class="result-note">No hard criterion fails. Add the missing value to evaluate this apartment.</p>
+            <div class="btn-row" style="margin-top:12px"><button class="btn btn-outline btn-small" type="button">Add missing data</button></div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <div class="tpl-block">
+      <span class="tpl-tag">.result-card · .badge-incomplete</span>
+      <article class="result-card">
+        <div class="result-head">
+          <div class="result-title"><h3>Room by the river</h3><div class="result-meta">DEMO-05 · 560 € · 19.5 m²</div></div>
+          <span class="badge badge-incomplete">Incomplete soft data</span>
+        </div>
+        <div class="result-body" style="grid-template-columns:1fr">
+          <div>
+            <h4>Not scored yet</h4>
+            <ul class="result-reasons"><li><b>E05 Commute:</b> unknown.</li></ul>
+            <p class="result-note">All hard criteria passed. It will appear in the ranking once the commute time is known.</p>
+            <div class="btn-row" style="margin-top:12px"><button class="btn btn-outline btn-small" type="button">Add missing data</button></div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>
