@@ -6,7 +6,8 @@
   <meta name="theme-color" content="#174D45">
   <title>Apartment Decision Maker</title>
   <link rel="stylesheet" href="style.css">
-  <script src="script.js" defer></script>
+  <link rel="stylesheet" href="components.css">
+  <link rel="stylesheet" href="app.css">
 </head>
 <body>
   <!-- The home page has a top navigation and no sidebar. -->
@@ -17,18 +18,24 @@
         <a href="#home">Home</a>
         <a href="#decision">Decision Maker</a>
         <a href="#apartments">All Apartments</a>
+        <a href="#favorites">Favorites</a>
         <a href="#tips">Good to Know</a>
       </nav>
     </header>
     <main class="home-main">
       <div class="hero-label">APARTMENT DECISION SUPPORT</div>
       <h1>Find the place<br><em>that fits you.</em></h1>
-      <p>A smarter way to explore your options and make a confident housing decision.</p>
+      <p>Enter the apartments you are considering, tell us what matters to you, and get a transparent ranking with clear reasons.</p>
       <div class="hero-actions">
         <a href="#decision" class="btn btn-primary">Start deciding <span aria-hidden="true">→</span></a>
         <a href="#apartments" class="btn btn-outline">Explore apartments</a>
       </div>
       <div class="hero-graphic" aria-hidden="true"><div class="graphic-circle"><span>⌂</span></div><div class="graphic-tag">YOUR HOME. YOUR CHOICE.</div></div>
+      <ol class="home-steps" aria-label="How it works">
+        <li><b>1 · Apartments</b><span>Add listings or load the test dataset. Unknown values stay unknown.</span></li>
+        <li><b>2 · Preferences</b><span>Set your hard limits and compare criteria in pairs (AHP).</span></li>
+        <li><b>3 · Results</b><span>See the ranking, strengths, weaknesses and why others were excluded.</span></li>
+      </ol>
     </main>
     <footer class="home-footer">A student project · Apartment Decision Maker</footer>
   </div>
@@ -41,20 +48,34 @@
       <nav class="side-nav">
         <a href="#decision" data-page="decision"><span aria-hidden="true">◈</span> Decision Maker</a>
         <a href="#apartments" data-page="apartments"><span aria-hidden="true">▦</span> All Apartments</a>
-        <a href="#favorites" data-page="favorites"><span aria-hidden="true">♡</span> Favorites</a>
+        <a href="#favorites" data-page="favorites"><span aria-hidden="true">♡</span> Favorites <span class="nav-count" id="fav-count" hidden></span></a>
         <a href="#tips" data-page="tips"><span aria-hidden="true">✦</span> Good to Know</a>
       </nav>
       <div class="sidebar-bottom"><a href="#home">← Back to Home</a></div>
     </aside>
     <main class="workspace-main" id="workspace-main" tabindex="-1">
-      <div class="workspace-top"><span>APARTMENT DECISION MAKER</span><span class="prototype-label">DESIGN PROTOTYPE</span></div>
-      <div class="workspace-content">
-        <span class="section-eyebrow" id="page-eyebrow">YOUR WORKSPACE</span>
-        <h1 id="page-title">Decision Maker</h1>
-        <p id="page-description" class="page-description">This section is being designed.</p>
-        <div class="empty-state"><div class="empty-icon" id="page-icon" aria-hidden="true">◈</div><h2>Coming soon</h2><p>Content and functionality will be added in a later project phase.</p></div>
-      </div>
+      <div class="workspace-top"><span>APARTMENT DECISION MAKER</span><span class="prototype-label">PROTOTYPE · DATA STAYS IN THIS BROWSER</span></div>
+      <div class="workspace-content" id="view"></div>
     </main>
   </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+  <!-- Decision engine (no DOM access) -->
+  <script src="js/engine/criteria.js"></script>
+  <script src="js/engine/format.js"></script>
+  <script src="js/engine/ahp.js"></script>
+  <script src="js/engine/engine.js"></script>
+  <!-- Test fixtures, only used when the user loads them -->
+  <script src="js/data/test-dataset.js"></script>
+  <script src="js/data/test-profiles.js"></script>
+  <!-- User interface -->
+  <script src="js/app/store.js"></script>
+  <script src="js/app/ui.js"></script>
+  <script src="js/app/views/apartments.js"></script>
+  <script src="js/app/views/preferences.js"></script>
+  <script src="js/app/views/results.js"></script>
+  <script src="js/app/views/pages.js"></script>
+  <script src="js/app/main.js"></script>
 </body>
 </html>
