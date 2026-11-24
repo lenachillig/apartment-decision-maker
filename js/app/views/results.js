@@ -94,7 +94,8 @@
     if (kind === 'excluded') {
       heading = 'Failed hard criteria';
       reasons = item.fails.map(f => '<li><b>' + f.id + ' ' + U.esc(f.label) + ':</b> ' + U.esc(f.message) + '</li>');
-      const unknown = item.unknown.map(u => u.label.toLowerCase()).concat(item.softMissing.map(m => m.label.toLowerCase()));
+      // K01 and E01 share a field, so list every missing field only once.
+      const unknown = Array.from(new Set(item.unknown.map(u => u.label.toLowerCase()).concat(item.softMissing.map(m => m.label.toLowerCase()))));
       note = unknown.length ? 'Not provided: ' + unknown.join(', ') + '. This would not change the result.' : '';
     } else if (kind === 'insufficient') {
       heading = 'Cannot be checked yet';

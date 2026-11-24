@@ -113,7 +113,8 @@
         let best = null;
         if (r.best && favs.length > 1) {
           const nums = vals.filter(v => typeof v === 'number');
-          if (nums.length > 1) best = r.best === 'min' ? Math.min.apply(null, nums) : Math.max.apply(null, nums);
+          const lo = Math.min.apply(null, nums), hi = Math.max.apply(null, nums);
+          if (nums.length > 1 && lo !== hi) best = r.best === 'min' ? lo : hi; // no highlight when all are equal
         }
         return '<tr><th scope="row">' + r.label + '</th>' + vals.map(v => '<td' + (best !== null && v === best ? ' class="is-best"' : '') + '>' + r.show(v) +
           (best !== null && v === best ? ' <span class="visually-hidden">(best)</span>' : '') + '</td>').join('') + '</tr>';
