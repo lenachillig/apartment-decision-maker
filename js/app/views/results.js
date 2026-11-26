@@ -64,15 +64,44 @@
   function rankedCard(item, ev, expanded) {
     const l = item.listing;
     const ex = item.explanation;
-    const notes = [];
-    if (item.tied) notes.push('<p class="close-note">Same score as another apartment, so they share rank ' + item.rank + '.</p>');
-    if (item.closeTo.length) {
-      const others = item.closeTo.map(id => {
-        const o = ev.groups.ranked.find(x => x.id === id);
-        return U.esc(id) + ' (' + F.number(Math.abs(o.score - item.score), 2) + ' points apart)';
-      });
-      notes.push('<p class="close-note">Very close to ' + others.join(' and ') + '. Compare their features and make your own choice.</p>');
-    }
+    
+const notes = [];
+
+const closeApartments = (item.closeTo || [])
+  .map(id => ev.groups.ranked.find(x => x.id === id))
+  .filter(Boolean);
+
+if (item.tied || closeApartments.length) {
+  const parts = [];
+
+  if (item.tied) {
+    parts.push(
+      'This apartment shares rank ' + item.rank +
+      ' with another apartment'
+    );
+  }
+
+  if (closeApartments.length) {
+    const closeText = closeApartments.map(other =>
+      U.esc(other.id) + ' (' +
+      F.number(Math.abs(other.score - item.score), 2) +
+      ' points apart)'
+    ).join(' and ');
+
+    parts.push(
+      'it has a very similar score to ' + closeText
+    );
+  }
+
+  const message = parts.join(' and ') +
+    '. Compare their features before making your decision.';
+
+  notes.push(
+    '<p class="close-note"><strong>Similar results:</strong> ' +
+    message + '</p>'
+  );
+}
+
     const body = expanded ? '<div class="result-body"><div><h4>Points per criterion</h4>' + contribList(item, ev) +
       '<p class="field-note">Grey track = the most points a criterion can give (its weight). Green = points this apartment earned.</p>' + calcTable(item, ev) + '</div>' +
       '<div><h4>Why this rank</h4><ul class="explain is-strengths">' + (ex.topText ? '<li>' + U.esc(ex.topText) + '</li>' : '') +
@@ -137,20 +166,78 @@
         '<div class="btn-row"><a class="btn btn-primary btn-small" href="#decision/preferences">Review requirements</a><a class="btn btn-outline btn-small" href="#decision/apartments">Add apartments</a></div></div></div>';
     }
     let alerts = '';
-    if (ev.hasCloseScores) {
-      const pairs = [];
-      ranked.forEach((it, i) => { const nx = ranked[i + 1]; if (nx && it.closeTo.includes(nx.id)) pairs.push([it, nx]); });
-      alerts += '<div class="alert alert-info"><span class="alert-icon" aria-hidden="true">≈</span><div><strong>Some listings have very similar scores.</strong><p>' +
-        pairs.slice(0, 3).map(([x, y]) => U.esc(x.id) + ' and ' + U.esc(y.id) + ' (' + F.number(x.score - y.score, 2) + ' points)').join(', ') + (pairs.length > 3 ? ' and ' + (pairs.length - 3) + ' more' : '') +
-        '. The calculated order is kept, but differences below ' + F.number(C.SETTINGS.closeScorePoints, 1) + ' points are small. Compare their features and make your own choice.</p>' +
-        '<div class="btn-row"><button class="btn btn-outline btn-small" type="button" data-action="compare" data-ids="' + U.esc(pairs[0].map(i => i.id).join(',')) + '">Compare ' +
-        U.esc(pairs[0][0].id) + ' and ' + U.esc(pairs[0][1].id) + '</button></div></div></div>';
-    }
+    
+if (ev.hasCloseScores) {
+  const byId = new Map(ranked.map(item => [item.id, item]));
+  const pairs = [];
+  const seen = new Set();
+
+  ranked.forEach(item => {
+    (item.closeTo || []).forEach(id => {
+      const other = byId.get(id);
+      if (!other) return;
+
+      const key = [item.id, other.id].sort().join('|');
+      if (seen.has(key)) return;
+
+      seen.add(key);
+      pairs.push([item, other]);
+    });
+  });
+
+  if (pairs.length) {
+    const examples = pairs.slice(0, 3).map(([a, b]) =>
+      U.esc(a.id) + ' and ' + U.esc(b.id) +
+      ' (' + F.number(Math.abs(a.score - b.score), 2) + ' points)'
+    ).join(', ');
+
+    const more = pairs.length > 3
+      ? ' and ' + (pairs.length - 3) + ' more pairs'
+      : '';
+
+    const firstPair = pairs[0];
+
+    alerts += '<div class="alert alert-info">' +
+      '<span class="alert-icon" aria-hidden="true">≈</span>' +
+      '<div><strong>Some listings have very similar scores.</strong>' +
+      '<p>' + examples + more +
+      '. The calculated order is kept. Compare their features ' +
+      'and make your own choice.</p>' +
+      '<div class="btn-row">' +
+      '<button class="btn btn-outline btn-small" type="button" ' +
+      'data-action="compare" data-ids="' +
+      U.esc(firstPair.map(i => i.id).join(',')) + '">' +
+      'Compare ' + U.esc(firstPair[0].id) +
+      ' and ' + U.esc(firstPair[1].id) +
+      '</button></div></div></div>';
+  }
+}
+
     const cards = ranked.map((item, i) => {
       const expanded = ui.expanded[item.id] !== undefined ? ui.expanded[item.id] : i === 0;
       return rankedCard(item, ev, expanded);
     }).join('');
-    return alerts + '<p class="ranking-note">' + F.plural(ranked.length, 'apartment') + ' ranked. The score shows how well an apartment matches your preferences (0–100). It is not a probability of being satisfied.</p>' + cards;
+   
+return alerts +
+  '<p class="ranking-note">' +
+  F.plural(ranked.length, 'apartment') +
+  ' ranked. The score shows how well an apartment matches ' +
+  'your preferences (0–100). It is not a probability ' +
+  'of being satisfied.</p>' +
+
+  '<div class="alert alert-info" style="margin-bottom:18px">' +
+  '<span class="alert-icon" aria-hidden="true">i</span>' +
+  '<div><strong>Why might the top apartment stay the same?</strong>' +
+  '<p>Changing your preferences changes the importance of ' +
+  'different criteria, but the same apartment may still rank first ' +
+  'if it performs well overall.</p>' +
+  '<p>To see the effect of your preferences, compare the scores, ' +
+  'the ranking positions and the points contributed by each criterion. ' +
+  'Click "Details" and then "Show calculation" to explore the results.</p>' +
+  '</div></div>' +
+
+  cards;
+
   }
 
   function excludedPanel(ev) {

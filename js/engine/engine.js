@@ -253,13 +253,33 @@
       item.rank = prev && Math.abs(prev.score - item.score) <= S.tieTolerance ? prev.rank : i + 1;
       item.tied = false; item.closeTo = [];
     });
-    scored.forEach((item, i) => {
-      const next = scored[i + 1];
-      if (!next) return;
-      const diff = item.score - next.score;
-      if (diff <= S.tieTolerance) { item.tied = next.tied = true; }
-      else if (diff < S.closeScorePoints) { item.closeTo.push(next.id); next.closeTo.push(item.id); }
-    });
+    
+scored.forEach((item, i) => {
+  for (let j = i + 1; j < scored.length; j++) {
+    const other = scored[j];
+    const diff = Math.abs(item.score - other.score);
+
+    // Identical scores share the same rank.
+    if (diff <= S.tieTolerance) {
+      item.tied = true;
+      other.tied = true;
+    }
+
+    // Nearly identical scores must be flagged for all
+    // affected apartments, not only adjacent listings.
+    else if (diff < S.closeScorePoints) {
+      item.closeTo.push(other.id);
+      other.closeTo.push(item.id);
+    }
+
+    // Scores are sorted descending, so later values
+    // cannot be closer once the threshold is exceeded.
+    else {
+      break;
+    }
+  }
+});
+
     // Distinct raw scores that round to the same display value get extra decimals (Task 4, 4.3).
     scored.forEach(item => {
       let d = 2;

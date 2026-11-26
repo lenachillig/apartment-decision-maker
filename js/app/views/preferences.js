@@ -81,23 +81,92 @@
       '</div></div>';
   }
 
-  function anchorsCard(errors) {
-    const p = profile();
-    const rows = C.numericSoft.map(c => {
-      const a = p.anchors[c.id] || {};
-      const key = 'anchor_' + c.id;
-      const err = (touched[key + '_ideal'] && touched[key + '_worst']) || (a.ideal !== null && a.worst !== null) ? errors[key] : '';
-      const input = which => '<div class="input-unit"><input class="input" name="anchor.' + c.id + '.' + which + '" inputmode="decimal" aria-label="' +
-        c.label + ' ' + which + '" value="' + U.esc(U.inputValue(a[which])) + '" aria-describedby="e-' + key + '"><span>' + c.unit + '</span></div>';
-      return '<tr data-anchor="' + c.id + '" class="' + (err ? 'is-invalid' : '') + '"><td>' + c.label + ' <span class="field-code">' + c.id + '</span><div class="field-hint">' +
-        (c.better === 'lower' ? 'lower is better' : 'larger is better') + '</div></td><td>' + input('ideal') + '</td><td>' + input('worst') +
-        '</td></tr><tr class="ref-error-row"><td></td><td colspan="2">' + fieldError(key, err) + '</td></tr>';
-    }).join('');
-    return '<form class="card" id="anchor-card" novalidate><h2 class="card-title">Reference values</h2>' +
-      '<p class="card-intro">For each criterion: the value that earns full points and the worst value you would still accept (zero points). Values in between get points proportionally, values beyond are capped. These stay fixed while you compare, so adding an apartment never changes another apartment\'s score.</p>' +
-      '<div class="table-wrap" style="border:0"><table class="ref-table"><thead><tr><th scope="col">Criterion</th><th scope="col">Ideal (full points)</th><th scope="col">Worst acceptable (0 points)</th></tr></thead><tbody>' +
-      rows + '</tbody></table></div><p class="field-note">Privacy (E14) uses a fixed 1–5 scale and needs no input. Furnishing (E15) is set by the preference above.</p></form>';
-  }
+  
+function anchorsCard(errors) {
+  const p = profile();
+
+  // Examples only – these values are never applied automatically.
+  const examples = {
+    E01: { ideal: 300, worst: 650, help: 'Monthly rent: lower is better.' },
+    E02: { ideal: 0, worst: 3000, help: 'Deposit: lower is better.' },
+    E05: { ideal: 10, worst: 60, help: 'Commute time: lower is better.' },
+    E09: { ideal: 200, worst: 1500, help: 'Distance to supermarket: lower is better.' },
+    E12: { ideal: 35, worst: 10, help: 'Room size: larger is better.' }
+  };
+
+  const rows = C.numericSoft.map(c => {
+    const a = p.anchors[c.id] || {};
+    const example = examples[c.id];
+    const key = 'anchor_' + c.id;
+
+    const err =
+      (touched[key + '_ideal'] && touched[key + '_worst']) ||
+      (a.ideal !== null && a.worst !== null)
+        ? errors[key]
+        : '';
+
+    const input = which =>
+      '<div class="input-unit">' +
+      '<input class="input" name="anchor.' + c.id + '.' + which +
+      '" inputmode="decimal" aria-label="' + c.label + ' ' + which +
+      '" placeholder="e.g. ' + example[which] +
+      '" value="' + U.esc(U.inputValue(a[which])) +
+      '" aria-describedby="e-' + key + '">' +
+      '<span>' + c.unit + '</span></div>';
+
+    return '<tr data-anchor="' + c.id +
+      '" class="' + (err ? 'is-invalid' : '') + '">' +
+      '<td>' + c.label +
+      ' <span class="field-code">' + c.id + '</span>' +
+      '<div class="field-hint">' + example.help + '</div>' +
+      '<div class="field-hint">Example: ideal ' +
+      example.ideal + ' ' + c.unit +
+      ', worst ' + example.worst + ' ' + c.unit +
+      '</div></td>' +
+      '<td>' + input('ideal') + '</td>' +
+      '<td>' + input('worst') + '</td>' +
+      '</tr>' +
+      '<tr class="ref-error-row"><td></td><td colspan="2">' +
+      fieldError(key, err) + '</td></tr>';
+  }).join('');
+
+  return '<form class="card" id="anchor-card" novalidate>' +
+    '<h2 class="card-title">Reference values</h2>' +
+
+    '<p class="card-intro">' +
+    'Choose how each criterion is scored. ' +
+    'The ideal value gives full points (100%), while the worst ' +
+    'reference value gives zero points (0%). ' +
+    'Values in between receive points proportionally. ' +
+    'The numbers shown below are examples only. ' +
+    'You can enter your own values.' +
+    '</p>' +
+
+    '<div class="alert alert-info" style="margin-bottom:18px">' +
+    '<span class="alert-icon" aria-hidden="true">i</span>' +
+    '<div><strong>Scoring values are not mandatory limits.</strong>' +
+    '<p>For example, your maximum monthly budget decides whether ' +
+    'an apartment is excluded. These reference values only ' +
+    'determine how many points an eligible apartment receives.</p>' +
+    '</div></div>' +
+
+    '<div class="table-wrap" style="border:0">' +
+    '<table class="ref-table">' +
+    '<thead><tr>' +
+    '<th scope="col">Criterion</th>' +
+    '<th scope="col">Ideal (100% points)</th>' +
+    '<th scope="col">Worst reference (0% points)</th>' +
+    '</tr></thead><tbody>' +
+    rows +
+    '</tbody></table></div>' +
+
+    '<p class="field-note">' +
+    'Privacy (E14) uses a fixed 1–5 scale and needs no input. ' +
+    'Furnishing (E15) is set by your preference above. ' +
+    'Reference values stay fixed during evaluation.' +
+    '</p></form>';
+}
+
 
   function sliderPos(v) {
     if (v === null) return 0;
@@ -159,7 +228,18 @@
     const isLast = st.pairIndex === list.length - 1;
     return '<form class="card" id="pairwise-card" novalidate>' +
       '<div class="card-head"><h2 class="card-title">Pairwise comparisons</h2><span class="card-badge">' + answered + ' / ' + total + ' answered</span></div>' +
-      '<p class="card-intro">For each pair, say which criterion matters more to you. The weights are calculated from your answers with AHP and are never typed in.</p>' +
+      
+'<p class="card-intro">For each pair, choose which criterion matters more to you. ' +
+'There are no right or wrong preferences. Choose "Equal" only when both criteria ' +
+'are genuinely equally important to you. Your answers determine the weights ' +
+'used for the apartment ranking.</p>' +
+'<div class="alert alert-info" style="margin-bottom:18px">' +
+'<span class="alert-icon" aria-hidden="true">i</span>' +
+'<div><strong>Take your time – you can review your answers.</strong>' +
+'<p>Use Previous to go back or open "All comparisons" to jump to any question. ' +
+'You do not need to restart if you want to change an answer.</p>' +
+'</div></div>' +
+
       '<div class="progress"><span id="pw-progress-label">Question ' + (st.pairIndex + 1) + ' of ' + total + '</span><div class="progress-track" role="progressbar" aria-label="Pairwise comparisons answered" aria-valuemin="0" aria-valuemax="' +
         total + '" aria-valuenow="' + answered + '"><div class="progress-fill" style="width:' + (answered / total * 100).toFixed(1) + '%"></div></div></div>' +
       '<fieldset class="pairwise" style="border:0;padding:0;margin-top:18px"><legend class="pairwise-question">Which is more important to you: <b>' +
@@ -177,13 +257,39 @@
     const r = AW.ahp.compute(chk.activeSoft, profile().judgments);
     const sorted = chk.activeSoft.slice().sort((x, y) => r.weights[y] - r.weights[x]);
     const max = r.weights[sorted[0]];
-    const status = r.consistent
-      ? '<div class="alert alert-info"><span class="alert-icon" aria-hidden="true">✓</span><div><strong>Your answers are consistent (CR ' + F.number(r.cr, 4) + ', limit ' + F.number(r.crLimit, 2) + ').</strong></div></div>'
-      : '<div class="alert alert-warning" role="alert"><span class="alert-icon" aria-hidden="true">!</span><div><strong>Your answers contradict each other too much (CR ' +
-        F.number(r.cr, 2) + ', limit ' + F.number(r.crLimit, 2) + ').</strong><p>No ranking is shown until you review your answers. The comparison that deviates most is <b>' +
-        label(r.mostDeviating.a) + ' vs. ' + label(r.mostDeviating.b) + '</b>. Your answers are never changed automatically.</p>' +
-        '<div class="btn-row"><button class="btn btn-primary btn-small" type="button" data-action="review" data-a="' + r.mostDeviating.a + '" data-b="' + r.mostDeviating.b +
-        '">Review this comparison</button></div></div></div>';
+    
+const status = r.consistent
+  ? '<div class="alert alert-info">' +
+    '<span class="alert-icon" aria-hidden="true">✓</span>' +
+    '<div><strong>Your answers are consistent (CR ' +
+    F.number(r.cr, 4) + ', limit ' +
+    F.number(r.crLimit, 2) + ').</strong>' +
+    '<p>Your comparisons are consistent enough to calculate a ranking.</p>' +
+    '</div></div>'
+  : '<div class="alert alert-warning" role="alert">' +
+    '<span class="alert-icon" aria-hidden="true">!</span>' +
+    '<div><strong>Some of your preferences contradict each other.</strong>' +
+    '<p>Your consistency ratio (CR ' + F.number(r.cr, 2) +
+    ') is above the allowed limit of ' +
+    F.number(r.crLimit, 2) + '.</p>' +
+    '<p>For example, if cost is more important than commute, and ' +
+    'commute is more important than room size, it may be ' +
+    'contradictory to rate room size as much more important than cost.</p>' +
+    '<p><strong>What can you do?</strong> Review the comparison ' +
+    'between <b>' + label(r.mostDeviating.a) +
+    ' and ' + label(r.mostDeviating.b) +
+    '</b>. Check whether your answer reflects your actual preferences. ' +
+    'You can also review other answers if needed.</p>' +
+    '<p>You do not need to choose "Equal" for every question. ' +
+    'Your answers are never changed automatically. ' +
+    'The final ranking remains unavailable until the comparisons ' +
+    'are sufficiently consistent.</p>' +
+    '<div class="btn-row"><button class="btn btn-primary btn-small" ' +
+    'type="button" data-action="review" data-a="' +
+    r.mostDeviating.a + '" data-b="' +
+    r.mostDeviating.b + '">Review this comparison</button>' +
+    '</div></div></div>';
+
     const matrix = '<div class="table-wrap"><table class="data-table matrix-table"><caption class="visually-hidden">Pairwise comparison matrix</caption><thead><tr><th scope="col"></th>' +
       r.ids.map(id => '<th scope="col" class="num">' + id + '</th>').join('') + '</tr></thead><tbody>' +
       r.matrix.map((row, i) => '<tr><th scope="row">' + r.ids[i] + '</th>' + row.map(v => '<td class="num">' + F.ratio(v) + '</td>').join('') + '</tr>').join('') +

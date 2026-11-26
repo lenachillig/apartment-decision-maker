@@ -279,3 +279,21 @@
   });
   out.innerHTML = html + '</ul>';
 })();
+
+it('I-01: all tied apartments are flagged as close to APT-014', () => {
+  const r = run('A');
+
+  const a = byId(r, 'APT-014');
+  const b = byId(r, 'APT-049');
+  const c = byId(r, 'APT-050');
+
+  eq(b.rank, c.rank, 'identical scores share rank');
+
+  ok(a.closeTo.includes(b.id));
+  ok(a.closeTo.includes(c.id));
+
+  ok(b.closeTo.includes(a.id));
+  ok(c.closeTo.includes(a.id));
+
+  ok(b.tied && c.tied, 'tie flags remain intact');
+});
